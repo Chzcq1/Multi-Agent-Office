@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --font-sans: var(--app-font-sans);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 12%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --ring: 213 94% 68%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 12%;
+  --primary: 213 94% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 240 10% 25%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 9% 55%;
+  --accent: 220 14% 94%;
+  --accent-foreground: 240 10% 20%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --app-font-sans: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border box-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(220 13% 82%); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(220 13% 70%); }
+
+/* Typing dots animation */
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-6px); opacity: 1; }
+}
+.dot-1 { animation: bounce-dot 1.2s infinite 0s; }
+.dot-2 { animation: bounce-dot 1.2s infinite 0.2s; }
+.dot-3 { animation: bounce-dot 1.2s infinite 0.4s; }
+
+/* Fade-in for messages */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 0.35s ease forwards; }
+
+/* Speech bubble pop-in animation */
+@keyframes bubble-pop {
+  0%   { opacity: 0; transform: scale(0.7) translateY(4px); }
+  60%  { transform: scale(1.06) translateY(-1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.speech-bubble {
+  animation: bubble-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Prose styling for markdown-like output */
+.thai-prose p { margin-bottom: 0.6em; }
+.thai-prose ul { list-style: disc; padding-left: 1.4em; margin-bottom: 0.6em; }
+.thai-prose li { margin-bottom: 0.2em; }
+.thai-prose strong { font-weight: 600; }
+
+/* iOS safe-area utilities */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+
+/* Prevent pull-to-refresh on iOS WebApp */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Better tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent iOS text size adjust */
+html {
+  -webkit-text-size-adjust: 100%;
+}

@@ -1,0 +1,14 @@
+{
+  "installCommand": "pnpm install --ignore-scripts",
+  "buildCommand": "pnpm --filter @workspace/api-server run build && echo '[1/4] API build OK' && (pnpm --filter @workspace/db run push-force || echo '[2/4] DB push skipped — set DATABASE_URL in Vercel env vars') && pnpm --filter @workspace/ai-boardroom run build && echo '[3/4] Frontend build OK' && mkdir -p public && cp -r artifacts/ai-boardroom/dist/public/. public/ && echo '[4/4] Deploy ready'",
+  "outputDirectory": "public",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 300
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

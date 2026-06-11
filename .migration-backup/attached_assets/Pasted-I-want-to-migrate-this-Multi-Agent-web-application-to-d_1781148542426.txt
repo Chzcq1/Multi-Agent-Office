@@ -1,0 +1,33 @@
+I want to migrate this Multi-Agent web application to deploy and run permanently on Vercel. Right now, I need you to refactor and prepare the project structure to meet Vercel's production standards, move API keys to environment variables, and set up the foundation for Supabase Database and Authentication.
+
+Please execute the following steps carefully:
+
+### 1. Refactor API Keys to Vercel Environment Variables
+- Audit the entire codebase and locate all hardcoded API keys (including Gemini API, GitHub API, or any LLM provider tokens).
+- Replace all hardcoded keys with safe `process.env` calls.
+- Use Vercel-compatible naming conventions, for example: `NEXT_PUBLIC_GEMINI_API_KEY` (if using Next.js) or standard backend environment variables depending on our current framework.
+- Create a `.env.example` file in the root directory showcasing all required environment variables so I know what keys to input into the Vercel Dashboard later.
+
+### 2. Set Up the Project Directory for Vercel Deployment
+- Ensure the project has a clean separation of concerns. Organize folders logically into configurations, components, hooks, and services/API routes.
+- Verify that standard configuration files (like `vercel.json` if needed, `package.json` scripts, and bundler configs) are optimized for a smooth deployment without build errors.
+
+### 3. Prepare the Supabase Integration Infrastructure
+- Install and configure `@supabase/supabase-js` client library.
+- Create a dedicated utility file (e.g., `src/lib/supabaseClient.js` or `src/utils/supabase.js`) to initialize the Supabase client using environment variables: `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+
+### 4. Scaffold the Authentication Structure
+- Create placeholders and files for the Login system (OAuth via Google and Email/Password).
+- Scaffold the client-side Authentication Page/Component (`Login.jsx` or similar) with clean UI mockups matching our current theme.
+- Prepare the auth context or wrapper to track user session states throughout the application.
+
+### 5. Scaffold User Wallet / Credit Database Schema
+- Create a clear documentation markdown file or a migration SQL file (`supabase_schema.sql`) outlining the required Database tables to store user credit balances and wallet status.
+- The schema must include a `users_profile` table or equivalent, tracking:
+  - `user_id` (foreign key linked to Supabase Auth)
+  - `email`
+  - `credits` (integer/numeric balance, defaulting to 0 or a welcome credit amount)
+  - `updated_at`
+- Write placeholder functions or API backend utilities that fetch and update the user's current credit balance from this new database structure.
+
+Please analyze our current project files first, adjust them according to this structured framework, and let me know once the environment variables, folder re-organization, and Supabase client foundations are ready for deployment!

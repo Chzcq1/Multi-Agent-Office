@@ -1,0 +1,67 @@
+Please implement and fix the system architecture using the following English Logic and Flowchart Blueprint to prevent context drifting and bugs during multi-turn conversations:
+
+===================================================================
+                SYSTEM ARCHITECTURE FLOWCHART
+===================================================================
+
+[User Input (Chen's Prompt)]
+          |
+          v
+[1. COORDINATOR / GATEKEEPER] 
+          |
+          v
+   <Is Input Small Talk / Greeting / General Chat?>
+          |
+          +---> (YES) ---> [Coordinator replies naturally alone]
+          |                         |
+          |                         v
+          |                [TERMINATE PIPELINE] (Stop execution here. Do not trigger other agents)
+          |
+          +---> (NO)  ---> [Proceed to 2. BOARDROOM LOOP] 
+                                    |
+                                    v
+                       [TRIGGER DATABASE REFRESH]
+                       - Run [Reset State on New Task]
+                       - Flush/Clear previous answers of Agents 2-6
+                                    |
+                                    v
+                       [INJECT STRICT WINDOW CONTEXT]
+                       - Package Payload for Agents 2-6:
+                         * Only current [System Prompt]
+                         * Only current [Chen's Latest Prompt]
+                         * Only current [Coordinator's Task Summary]
+                       * CRITICAL: Do NOT append any historical data or previous turns!
+                                    |
+                                    v
+                       =====================================
+                                 BOARDROOM LOOP
+                       =====================================
+                                    |
+                                    v
+                       [Round 1: Drafting Phase]
+                       - Run [RESEARCHER] to find core facts.
+                       - Run [ANALYST] to weigh tradeoffs/ROI.
+                       - Merge into "Draft Report V1"
+                                    |
+                                    v
+                       [Round 2: Critique & Review Phase]
+                       - Send V1 to [DEVIL'S ADVOCATE] (Find blindspots/risks).
+                       - Send V1 to [AUDITOR] (Fact-check for hallucinations).
+                                    |
+                                    v
+                        <Are there any Fatal Flaws / Critical Risks?>
+                                    |
+                                    +---> (YES) ---> [Status: REVISION_NEEDED]
+                                    |                - Trigger "Request Revision" Loop
+                                    |                - Route V1 back to [RESEARCHER / ANALYST]
+                                    |                * Max limit: 2 turns to prevent infinity loop.
+                                    |
+                                    +---> (NO)  ---> [Status: APPROVED]
+                                                     - Route to [EXECUTIVE SUMMARIZER]
+                                                              |
+                                                              v
+                                                     [3. FINAL OUTPUT PROCESSING]
+                                                     - Formulate clean, un-biased executive summary.
+                                                     - Render output on Chen's Dashboard.
+
+===================================================================

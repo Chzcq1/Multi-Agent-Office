@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "paths": {
+      "@workspace/db": ["../lib/db/src/index.ts"],
+      "@workspace/db/schema": ["../lib/db/src/schema/index.ts"],
+      "@workspace/api-zod": ["../lib/api-zod/src/index.ts"],
+      "@workspace/supabase": ["../lib/supabase/src/index.ts"]
+    }
+  },
+  "include": [
+    "./**/*.ts",
+    "../artifacts/api-server/src/**/*.ts",
+    "../lib/**/*.ts"
+  ],
+  "exclude": ["../node_modules", "../artifacts/ai-boardroom"]
+}
