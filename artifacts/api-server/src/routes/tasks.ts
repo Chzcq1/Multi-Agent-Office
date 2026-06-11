@@ -335,43 +335,61 @@ async function saveLog(taskId: number, senderAgent: string, agentRole: string, m
 
 // ── CRUD ──────────────────────────────────────────────────────────────────────
 
+const dbError = (err: unknown, res: any) => {
+  const msg = (err as Error).message ?? String(err);
+  console.error("[tasks] DB error:", msg);
+  return res.status(503).json({
+    error: "Database error",
+    detail: msg,
+    hint: "Visit /api/health to check DB connection and table status",
+  });
+};
+
 router.get("/tasks", async (_req, res) => {
-  await ensureDefaultAgents();
-  const tasks = await db.select().from(tasksTable).orderBy(desc(tasksTable.createdAt));
-  res.json(tasks);
+  try {
+    await ensureDefaultAgents();
+    const tasks = await db.select().from(tasksTable).orderBy(desc(tasksTable.createdAt));
+    res.json(tasks);
+  } catch (err) { return dbError(err, res); }
 });
 
 router.post("/tasks", async (req, res) => {
-  const { userCommand } = req.body;
-  if (!userCommand?.trim()) return res.status(400).json({ error: "userCommand is required" });
-  await ensureDefaultAgents();
-  const [task] = await db
-    .insert(tasksTable)
-    .values({ userCommand: userCommand.trim(), status: "pending" })
-    .returning();
-  res.status(201).json(task);
+  try {
+    const { userCommand } = req.body;
+    if (!userCommand?.trim()) return res.status(400).json({ error: "userCommand is required" });
+    await ensureDefaultAgents();
+    const [task] = await db
+      .insert(tasksTable)
+      .values({ userCommand: userCommand.trim(), status: "pending" })
+      .returning();
+    res.status(201).json(task);
+  } catch (err) { return dbError(err, res); }
 });
 
 router.get("/tasks/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
-  if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
-  const [task] = await db.select().from(tasksTable).where(eq(tasksTable.id, id));
-  if (!task) return res.status(404).json({ error: "Task not found" });
-  const discussions = await db
-    .select().from(discussionLogsTable)
-    .where(eq(discussionLogsTable.taskId, id))
-    .orderBy(asc(discussionLogsTable.createdAt));
-  const [summary] = await db.select().from(finalSummariesTable).where(eq(finalSummariesTable.taskId, id));
-  res.json({ ...task, discussions, summary: summary ?? null });
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+    const [task] = await db.select().from(tasksTable).where(eq(tasksTable.id, id));
+    if (!task) return res.status(404).json({ error: "Task not found" });
+    const discussions = await db
+      .select().from(discussionLogsTable)
+      .where(eq(discussionLogsTable.taskId, id))
+      .orderBy(asc(discussionLogsTable.createdAt));
+    const [summary] = await db.select().from(finalSummariesTable).where(eq(finalSummariesTable.taskId, id));
+    res.json({ ...task, discussions, summary: summary ?? null });
+  } catch (err) { return dbError(err, res); }
 });
 
 router.delete("/tasks/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
-  if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
-  await db.delete(finalSummariesTable).where(eq(finalSummariesTable.taskId, id));
-  await db.delete(discussionLogsTable).where(eq(discussionLogsTable.taskId, id));
-  await db.delete(tasksTable).where(eq(tasksTable.id, id));
-  res.status(204).end();
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: "Invalid id" });
+    await db.delete(finalSummariesTable).where(eq(finalSummariesTable.taskId, id));
+    await db.delete(discussionLogsTable).where(eq(discussionLogsTable.taskId, id));
+    await db.delete(tasksTable).where(eq(tasksTable.id, id));
+    res.status(204).end();
+  } catch (err) { return dbError(err, res); }
 });
 
 // ── SINGLE-STEP SSE ENDPOINT ──────────────────────────────────────────────────
